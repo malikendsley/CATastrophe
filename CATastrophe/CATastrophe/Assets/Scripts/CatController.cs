@@ -11,17 +11,35 @@ public class CatController : MonoBehaviour
     Vector3 move;
     private Animator anim;
     bool walking = false;
+
+    public int maxHappy = 100;
+    public int currentHappy;
+    public HappyBar happyBar;
+
     // Start is called before the first frame update
     void Start()
     {
         cat = GetComponent<CharacterController>();
         move = Vector3.zero;
         anim = catmesh.GetComponent<Animator>();
+
+        currentHappy = maxHappy;
+        happyBar.SetMaxHappy(maxHappy);
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        //Testing the happiness bar slider
+        if(Input.GetKey(KeyCode.B))
+        {
+            changeHappy(20);
+        }
+        if(Input.GetKey(KeyCode.N))
+        {
+            changeHappy(-20);
+        }
 
 
         if(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
@@ -60,5 +78,11 @@ public class CatController : MonoBehaviour
         cat.Move(move.normalized * speed * Time.deltaTime);
         move = Vector3.zero;
 
+    }
+
+    void changeHappy(int happiness)
+    {
+        currentHappy += happiness;
+        happyBar.SetHappy(currentHappy);
     }
 }
