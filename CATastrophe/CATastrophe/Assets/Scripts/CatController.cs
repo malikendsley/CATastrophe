@@ -23,7 +23,7 @@ public class CatController : MonoBehaviour
         move = Vector3.zero;
         anim = catmesh.GetComponent<Animator>();
 
-        currentHappy = maxHappy;
+        currentHappy = 0;
         happyBar.SetMaxHappy(maxHappy);
     }
 
@@ -40,7 +40,6 @@ public class CatController : MonoBehaviour
         {
             changeHappy(-20);
         }
-
 
         if(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
         {
