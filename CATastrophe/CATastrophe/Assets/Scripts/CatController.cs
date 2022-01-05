@@ -12,8 +12,8 @@ public class CatController : MonoBehaviour
     private Animator anim;
     bool walking = false;
 
-    public int maxHappy = 100;
-    public int currentHappy;
+    public float maxHappy = 100;
+    public float currentHappy;
     public HappyBar happyBar;
 
     // Start is called before the first frame update
@@ -34,7 +34,7 @@ public class CatController : MonoBehaviour
         //Testing the happiness bar slider
         if(Input.GetKey(KeyCode.B))
         {
-            changeHappy(20);
+            changeHappy(20 * Time.deltaTime);
         }
         if(Input.GetKey(KeyCode.N))
         {
@@ -80,7 +80,7 @@ public class CatController : MonoBehaviour
 
     }
 
-    void changeHappy(int happiness)
+    void changeHappy(float happiness)
     {
         currentHappy += happiness;
         happyBar.SetHappy(currentHappy);
