@@ -12,9 +12,24 @@ namespace SVS
         public void PlaceStructuresAroundRoad(List<Vector3Int> roadPositions)
         {
             Dictionary<Vector3Int, Direction> freeEstateSpots = FindFreeSpacesAroundRoad(roadPositions);
-            foreach (var position in freeEstateSpots.Keys)
+            foreach (var freeSpots in freeEstateSpots)
             {
-                Instantiate(prefab, position, Quaternion.identity, transform);
+                var rotation = Quaternion.identity;
+                switch (freeSpots.Value)
+                {
+                    case Direction.Up:
+                        rotation = Quaternion.Euler(0, 90, 0);
+                        break;
+                    case Direction.Down:
+                        rotation = Quaternion.Euler(0, -90, 0);
+                        break;
+                    case Direction.Right:
+                        rotation = Quaternion.Euler(0, 180, 0);
+                        break;
+                    default:
+                        break;
+                }
+                Instantiate(prefab, freeSpots.Key, rotation, transform);
             }
         }
 
@@ -33,7 +48,7 @@ namespace SVS
                         {
                             continue;
                         }
-                        freeSpaces.Add(newPosition, Direction.Right);
+                        freeSpaces.Add(newPosition, PlacementHelper.GetReverseDirection(direction));
                     }
                 }
             }
