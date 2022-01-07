@@ -6,7 +6,7 @@ namespace SVS
 {
     public class StructureHelper : MonoBehaviour
     {
-        public GameObject prefab;
+        public BuildingType[] buildingTypes;
         public Dictionary<Vector3Int, GameObject> structuresDictionary = new Dictionary<Vector3Int, GameObject>();
 
         public void PlaceStructuresAroundRoad(List<Vector3Int> roadPositions)
@@ -29,8 +29,37 @@ namespace SVS
                     default:
                         break;
                 }
-                Instantiate(prefab, freeSpots.Key, rotation, transform);
+                for(int i = 0; i < buildingTypes.Length; i++)
+                {
+                    if(buildingTypes[i].quantity == -1)
+                    {
+                        var building = SpawnPrefab(buildingTypes[i].GetPrefab(), freeSpots.Key, rotation);
+                        structuresDictionary.Add(freeSpots.Key, building);
+                        break;
+                    }
+                    if (buildingTypes[i].IsBuildingAvailable())
+                    {
+                        if (buildingTypes[i].sizeRequired > 1)
+                        {
+                            
+                        }
+                        else
+                        {
+                            var building = SpawnPrefab(buildingTypes[i].GetPrefab(), freeSpots.Key, rotation);
+                            structuresDictionary.Add(freeSpots.Key, building);
+                            
+                        }
+                        break;
+                    }
+
+                }
             }
+        }
+
+        private GameObject SpawnPrefab(GameObject prefab, Vector3Int position, Quaternion rotation)
+        {
+            var newStructure = Instantiate(prefab, position, rotation, transform);
+            return newStructure;
         }
 
         private Dictionary<Vector3Int, Direction> FindFreeSpacesAroundRoad(List<Vector3Int> roadPositions)
