@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 namespace SVS
 {
@@ -9,6 +10,11 @@ namespace SVS
         public GameObject roadStraight, roadCorner, road3way, road4way, roadEnd;
         Dictionary<Vector3Int, GameObject> roadDictionary = new Dictionary<Vector3Int, GameObject>();
         HashSet<Vector3Int> fixRoadCandidates = new HashSet<Vector3Int>();
+
+        public List<Vector3Int> GetRoadPositions()
+        {
+            return roadDictionary.Keys.ToList();
+        }
 
         public void PlaceStreetPositions(Vector3 startPosition, Vector3Int direction, int length)
         {

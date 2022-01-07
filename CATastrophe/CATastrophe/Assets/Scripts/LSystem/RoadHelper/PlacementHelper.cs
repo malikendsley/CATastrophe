@@ -27,5 +27,23 @@ namespace SVS
             }
             return neighbourDirections;
         }
+
+        internal static Vector3Int GetOffsetFromDirection(Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Up:
+                    return new Vector3Int(0, 0, 1);
+                case Direction.Down:
+                    return new Vector3Int(0, 0, -1);
+                case Direction.Left:
+                    return Vector3Int.left;
+                case Direction.Right:
+                    return Vector3Int.right;
+                default:
+                    break;
+            }
+            throw new System.Exception("No direction such as " + direction);
+        }
     }
 }
