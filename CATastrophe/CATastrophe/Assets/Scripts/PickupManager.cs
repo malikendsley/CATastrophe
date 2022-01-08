@@ -4,11 +4,8 @@ using UnityEngine;
 using System.Linq;
 
 /* works in tanden with PickupItem to allow certain objects to be picked up
- * the manager takes care of the structure, the children do the movement
- * needs housekeeping but im heading out for now
+* the manager takes care of the positions, the children do the kinematics
 */
-
-[RequireComponent(typeof(SphereCollider))]
 
 public class PickupManager : MonoBehaviour
 {
@@ -16,26 +13,37 @@ public class PickupManager : MonoBehaviour
     public GameObject pickupAnchor;
     public Camera cam;
     public Vector3 colliderCenter;
-    public float colliderRadius;
     public float pickupDistance;
     private bool isHolding;
-    private List<GameObject> pickups;
-    private GameObject held;
+    private List<GameObject> pickups = new List<GameObject>();
+    private GameObject held = null;
+    private SphereCollider sc;
     RaycastHit rh;
+    int pickupMask;
+    private void Start()
+    {
+        pickupMask = LayerMask.GetMask("Pickup");
+        sc = gameObject.AddComponent(typeof(SphereCollider)) as SphereCollider;
+        sc.radius = pickupDistance;
+        sc.center = colliderCenter;
+        sc.isTrigger = true;
 
-    int pickupMask = LayerMask.GetMask("Pickup");
+    }
 
-    private void OnTriggerEnter(Collider pickup)
+    void OnTriggerEnter(Collider pickup)
     {
         //if the object is a pickup, add it to a list of eligible pickups
         if (pickup.gameObject.tag == "Pickup")
         {
             pickups.Add(pickup.gameObject);
             Debug.Log(pickup.gameObject.name + " In Range");
+        } else
+        {
+        Debug.Log(pickup.gameObject.name + "Not a pickup");
         }
     }
 
-    private void OnTriggerExit(Collider pickup)
+    void OnTriggerExit(Collider pickup)
     {
         //if the object is a pickup, remove it from the list of eligible pickups
         if (pickup.gameObject.tag == "Pickup")
@@ -48,84 +56,86 @@ public class PickupManager : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.DrawIcon(pickupAnchor.transform.position, "anchor.png", true);
-        Gizmos.DrawWireSphere(colliderCenter, colliderRadius);
+        Gizmos.DrawWireSphere(gameObject.transform.position + colliderCenter, pickupDistance);
     }
 
 
-    public void OnInteract()
+    public void Interact()
     {
-        if (!isHolding)
+        if (isHolding)
         {
-            //when nothing is held, the script behaves straightforward
-            //priotize looked at object
-            if (Physics.Raycast(cam.transform.position, cam.transform.forward, out rh, pickupDistance, pickupMask))
-            {
-                Debug.DrawRay(cam.transform.position, cam.transform.forward * pickupDistance, Color.yellow);
-                rh.transform.SetParent(pickupAnchor.transform);
-                rh.transform.localPosition = Vector3.zero;
-                rh.transform.gameObject.GetComponent<PickupItem>().ChildPickup();
-                held = rh.transform.gameObject;
-                isHolding = true;
-            }
-            
-            //next, try to pick up the closest eligible gameobject
-            else 
-            {
-                //this might be cleanable with Linq system, 
-                if(pickups.Count == 0) {
-                    Debug.Log("Nothing in Range");
-                    return;
-                }
-                //set to null to make the compiler happy but this will always be set, so no big deal
-                GameObject closest = null;
-                float dist = Mathf.Infinity;
-                foreach(GameObject pickup in pickups)
-                {
-                    if (Vector3.Distance(pickup.transform.position, gameObject.transform.position) < dist)
-                    {
-                        closest = pickup;
-                    }
-                }
-                closest.transform.SetParent(pickupAnchor.transform);
-                closest.transform.localPosition = Vector3.zero;
-                closest.transform.gameObject.GetComponent<PickupItem>().ChildPickup();
-                held = closest.transform.gameObject;
-                isHolding = true;
-            }
-        }
-        else
-        {
-            //when an object is held, proximity pickups don't function but directed ones do
-            if (Physics.Raycast(cam.transform.position, cam.transform.forward, out rh, pickupDistance, pickupMask))
-            {
-                Debug.DrawRay(cam.transform.position, cam.transform.forward * pickupDistance, Color.yellow);
-                rh.transform.SetParent(pickupAnchor.transform);
-                rh.transform.localPosition = Vector3.zero;
-                rh.transform.gameObject.GetComponent<PickupItem>().ChildPickup();
-                held = rh.transform.gameObject;
-                isHolding = true;
-            } else
+            if (!camPickup())
             {
                 Drop();
             }
-
-            //down here, something is held and nothing is being looked at so drop the currently held object
-            
+        } else
+        {
+            if (!camPickup())
+            {
+                proxPickup();
+            }
         }
-
-
+        Debug.Log("Nothing nearby");
     }
 
     private void Drop()
     {
 
-        held.GetComponent<PickupItem>().ChildDrop();
         isHolding = false;
+        held.transform.SetParent(null);
+        held.GetComponent<PickupItem>().ChildDrop(gameObject);
         held = null;
+        
     }
 
-    //TODO: Deposit? Submit? Use?
+    //return true on successful pickup
+    private bool proxPickup()
+    {
+        if(pickups.Count == 0)
+        {
+            return false;
+        } else
+        {
+            //get closest eligible
+            GameObject closest = null;
+            float minDist = Mathf.Infinity;
+            foreach(GameObject pickup in pickups)
+            {
+                if (Vector3.Distance(pickup.transform.position, gameObject.transform.position) < minDist)
+                {
+                    closest = pickup;
+                }
+            }
+            //pick it up
+            Pickup(closest);
+            return true;
+        }
+    }
+    //return true on successful pickup
+    private bool camPickup()
+    {
+        //while the ray may hit something it also needs to be within the pickup radius to be consistent
+        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out rh, pickupMask) && pickups.Contains(rh.collider.gameObject))
+        {
+            Pickup(rh.transform.gameObject);
+            return true;
+        } else
+        {
+            Debug.Log("Cam failed, none in range");
+            return false;
+        }
+    }
 
+    private void Pickup(GameObject target)
+    {
+        //lock target to anchor
+        target.transform.SetParent(pickupAnchor.transform);
+        target.transform.localPosition = Vector3.zero;
+        target.transform.localRotation = Quaternion.identity;
+        held = target;
+        isHolding = true;
+        target.gameObject.GetComponent<PickupItem>().ChildPickup(gameObject);
+    }
     public GameObject GetHeld()
     {
         return held;
