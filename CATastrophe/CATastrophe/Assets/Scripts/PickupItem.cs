@@ -21,12 +21,13 @@ public class PickupItem : MonoBehaviour
         rb = gameObject.GetComponent<Rigidbody>();
     }
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
+        MeshFilter mf = GetComponent<MeshFilter>();
         Gizmos.color = Color.red;
-        if (!beingHeld)
+        if (!beingHeld  && mf != null)
         {
-            Gizmos.DrawWireMesh(GetComponent<MeshFilter>().sharedMesh, transform.position + ownOffsetPos, Quaternion.Euler(ownOffsetRot), gameObject.transform.localScale);
+            Gizmos.DrawWireMesh(mf.sharedMesh, transform.position + ownOffsetPos, transform.localRotation * Quaternion.Euler(ownOffsetRot));
         }
     }
     //called AFTER this object is picked up and locked

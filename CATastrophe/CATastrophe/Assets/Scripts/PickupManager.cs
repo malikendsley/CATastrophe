@@ -60,7 +60,7 @@ public class PickupManager : MonoBehaviour
     }
 
 
-    public void Interact()
+    public void Interact()  
     {
         if (isHolding)
         {
@@ -77,7 +77,6 @@ public class PickupManager : MonoBehaviour
         }
         Debug.Log("Nothing nearby");
     }
-
     private void Drop()
     {
 
@@ -134,6 +133,7 @@ public class PickupManager : MonoBehaviour
         target.transform.localRotation = Quaternion.identity;
         held = target;
         isHolding = true;
+        //notify the pickup
         target.gameObject.GetComponent<PickupItem>().ChildPickup(gameObject);
     }
     public GameObject GetHeld()
