@@ -1077,10 +1077,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d8fb10528529e649947f9b59ea23c40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 885689433009569897}
-  anim: {fileID: 885689432832062313}
-  animWalkTuneSpeed: 1000
-  controller: {fileID: 885689432481572613}
+  animWalkTune: 10
   walkSpeed: 2
   moveDeadzone: 0.1
   turnSmoothTime: 0.1
@@ -1552,7 +1549,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 885689433331477667}
-  m_LocalRotation: {x: 0.057357237, y: 0.000000017178055, z: -9.869103e-10, w: 0.9983537}
+  m_LocalRotation: {x: 0.057357237, y: -0.000000017178058, z: 9.869106e-10, w: 0.9983537}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -6570,7 +6567,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 4290362465852365416, guid: 576b784434b62c0488e6af20042a8add, type: 3}
+  - {fileID: 2100000, guid: 5c372fe57cba103408e06e43f0a0ffda, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
