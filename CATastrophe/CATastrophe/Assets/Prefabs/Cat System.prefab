@@ -989,6 +989,7 @@ GameObject:
   - component: {fileID: 885689432481572615}
   - component: {fileID: 885689432481572614}
   - component: {fileID: 3194528740362800907}
+  - component: {fileID: 9192276125320094382}
   m_Layer: 0
   m_Name: catController
   m_TagString: Player
@@ -1081,6 +1082,20 @@ MonoBehaviour:
   walkSpeed: 2
   moveDeadzone: 0.1
   turnSmoothTime: 0.1
+--- !u!114 &9192276125320094382
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 885689432481572619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e456d94d6b2220469b9fe66f843bd5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  headBone: {fileID: 4557716266377582822}
+  camera: {fileID: 885689433009569900}
 --- !u!1 &885689432664110845
 GameObject:
   m_ObjectHideFlags: 3
@@ -1307,7 +1322,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 885689433009569900}
-  m_LocalRotation: {x: 0.072202675, y: 0.00000001819431, z: 0.0000000016728304, w: 0.99739003}
+  m_LocalRotation: {x: 0.072202675, y: -0.00000001819431, z: -0.0000000016728303, w: 0.99739003}
   m_LocalPosition: {x: 0, y: 0.76954055, z: -4.057262}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -1549,7 +1564,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 885689433331477667}
-  m_LocalRotation: {x: 0.057357237, y: -0.000000017178058, z: 9.869106e-10, w: 0.9983537}
+  m_LocalRotation: {x: 0.057357237, y: 0.000000017178055, z: -9.869103e-10, w: 0.9983537}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -6567,7 +6582,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5c372fe57cba103408e06e43f0a0ffda, type: 2}
+  - {fileID: 2100000, guid: 9843eb79b5ba93f45a5915c12e432597, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
