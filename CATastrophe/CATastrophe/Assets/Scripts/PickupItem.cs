@@ -30,7 +30,7 @@ public class PickupItem : MonoBehaviour
             Gizmos.DrawWireMesh(mf.sharedMesh, transform.position + ownOffsetPos, transform.localRotation * Quaternion.Euler(ownOffsetRot));
         }
     }
-    //called AFTER this object is picked up and locked
+    //called AFTER this object is picked up and locked  
     public void ChildPickup(GameObject whoPickedUp)
     {
         beingHeld = true;
