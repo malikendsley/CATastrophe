@@ -989,6 +989,7 @@ GameObject:
   - component: {fileID: 885689432481572615}
   - component: {fileID: 885689432481572614}
   - component: {fileID: 3194528740362800907}
+  - component: {fileID: 9192276125320094382}
   m_Layer: 0
   m_Name: catController
   m_TagString: Player
@@ -1081,6 +1082,20 @@ MonoBehaviour:
   walkSpeed: 2
   moveDeadzone: 0.1
   turnSmoothTime: 0.1
+--- !u!114 &9192276125320094382
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 885689432481572619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e456d94d6b2220469b9fe66f843bd5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  headBone: {fileID: 4557716266377582822}
+  camera: {fileID: 885689433009569900}
 --- !u!1 &885689432664110845
 GameObject:
   m_ObjectHideFlags: 3
@@ -1105,7 +1120,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 885689432664110845}
-  m_LocalRotation: {x: 0.09358452, y: 0.0000000085654355, z: -8.051257e-10, w: 0.99561137}
+  m_LocalRotation: {x: 0.09358452, y: -0.000000008565434, z: 8.051255e-10, w: 0.99561137}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
