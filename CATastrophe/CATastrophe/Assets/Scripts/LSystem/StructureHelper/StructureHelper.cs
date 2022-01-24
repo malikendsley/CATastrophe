@@ -23,14 +23,14 @@ namespace SVS
                 var rotation = Quaternion.identity;
                 switch (freeSpots.Value)
                 {
-                    case Direction.Up:
-                        rotation = Quaternion.Euler(0, 90, 0);
-                        break;
                     case Direction.Down:
+                        rotation = Quaternion.Euler(0, -180, 0);
+                        break;
+                    case Direction.Left:
                         rotation = Quaternion.Euler(0, -90, 0);
                         break;
                     case Direction.Right:
-                        rotation = Quaternion.Euler(0, 180, 0);
+                        rotation = Quaternion.Euler(0, 90, 0);
                         break;
                     default:
                         break;
