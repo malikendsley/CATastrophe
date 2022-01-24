@@ -4,12 +4,10 @@ using UnityEngine;
 
 public class QOLCatLookat : MonoBehaviour
 {
-    public float Xangle = 30;
-    public float Yangle = 50;
+
     public float targetDist = 5;
     public float gizmoSize = 1f;
-    public GameObject headBone;
-    public GameObject cam;
+    public GameObject headTarget;
     private bool isEnabled = true;
     private Vector3 target;
     
@@ -24,9 +22,9 @@ public class QOLCatLookat : MonoBehaviour
         if (isEnabled)
         {
             Debug.Log("head turned");
-            target = cam.transform.forward;
+            target = Camera.main.transform.forward * targetDist;
             Debug.Log(target);
-            headBone.transform.LookAt(target * targetDist);
+            headTarget.transform.position = target;
             //headBone.transform.eulerAngles = new Vector3(
             //    Mathf.Clamp(headBone.transform.eulerAngles.x, -1 * Xangle, Xangle),
             //    Mathf.Clamp(headBone.transform.eulerAngles.y, -1 * Yangle, Yangle), 
@@ -34,11 +32,6 @@ public class QOLCatLookat : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawSphere(target * targetDist, gizmoSize);
-        Gizmos.DrawLine(cam.transform.position, target * targetDist);
-    }
     public void Disable()
     {
         isEnabled = false;
