@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5336754294624985376}
   - component: {fileID: 5336754294624985377}
   - component: {fileID: 5336754294624985379}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: ShirtHolder
   m_TagString: Pickup
   m_Icon: {fileID: 0}
@@ -143,7 +143,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: cdca96386216ebe4fb40c7b4322028d3, type: 3}
       propertyPath: m_Name
-      value: shirt
+      value: shirtObject
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: cdca96386216ebe4fb40c7b4322028d3, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: cdca96386216ebe4fb40c7b4322028d3, type: 3}
+      propertyPath: m_TagString
+      value: Pickup
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: -7511558181221131132, guid: cdca96386216ebe4fb40c7b4322028d3, type: 3}

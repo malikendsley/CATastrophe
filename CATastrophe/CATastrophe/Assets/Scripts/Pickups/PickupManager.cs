@@ -1,8 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
-
+using System;
 /* works in tanden with PickupItem to allow certain objects to be picked up
 * the manager takes care of the positions, the children do the kinematics
 */
@@ -15,11 +13,16 @@ public class PickupManager : MonoBehaviour
     public Vector3 colliderCenter;
     public float pickupDistance;
     private bool isHolding;
-    private List<GameObject> pickups = new List<GameObject>();
+    private List<GameObject> pickups;
     private GameObject held = null;
     private SphereCollider sc;
     RaycastHit rh;
     int pickupMask;
+
+    public event EventHandler PickupEvent;
+    public event EventHandler DropEvent;
+
+
     private void Start()
     {
         pickupMask = LayerMask.GetMask("Pickup");
@@ -27,29 +30,30 @@ public class PickupManager : MonoBehaviour
         sc.radius = pickupDistance;
         sc.center = colliderCenter;
         sc.isTrigger = true;
+        pickups = new List<GameObject>();
 
     }
 
     void OnTriggerEnter(Collider pickup)
     {
         //if the object is a pickup, add it to a list of eligible pickups
-        if (pickup.gameObject.tag == "Pickup")
+        if (pickup.gameObject.CompareTag("Pickup"))
         {
             pickups.Add(pickup.gameObject);
-            Debug.Log(pickup.gameObject.name + " In Range");
+            //Debug.Log(pickup.gameObject.name + " In Range");
         } else
         {
-        Debug.Log(pickup.gameObject.name + "Not a pickup");
+        //Debug.Log(pickup.gameObject.name + "Not a pickup");
         }
     }
 
     void OnTriggerExit(Collider pickup)
     {
         //if the object is a pickup, remove it from the list of eligible pickups
-        if (pickup.gameObject.tag == "Pickup")
+        if (pickup.gameObject.CompareTag("Pickup"))
         {
             pickups.Remove(pickup.gameObject);
-            Debug.Log(pickup.gameObject.name + " Out of Range");
+            //Debug.Log(pickup.gameObject.name + " Out of Range");
         }
     }
 
@@ -64,31 +68,33 @@ public class PickupManager : MonoBehaviour
     {
         if (isHolding)
         {
-            if (!camPickup())
+            if (!CamPickup())
             {
                 Drop();
             }
         } else
         {
-            if (!camPickup())
+            if (!CamPickup())
             {
-                proxPickup();
+                ProxPickup();
             }
         }
         Debug.Log("Nothing nearby");
     }
-    private void Drop()
+    public void Drop()
     {
 
         isHolding = false;
         held.transform.SetParent(null);
         held.GetComponent<PickupItem>().ChildDrop(gameObject);
+        //notify subscribers
+        DropEvent?.Invoke(held, EventArgs.Empty);
         held = null;
         
     }
 
     //return true on successful pickup
-    private bool proxPickup()
+    private bool ProxPickup()
     {
         if(pickups.Count == 0)
         {
@@ -111,7 +117,7 @@ public class PickupManager : MonoBehaviour
         }
     }
     //return true on successful pickup
-    private bool camPickup()
+    private bool CamPickup()
     {
         //while the ray may hit something it also needs to be within the pickup radius to be consistent
         if (Physics.Raycast(cam.transform.position, cam.transform.forward, out rh, pickupMask) && pickups.Contains(rh.collider.gameObject))
@@ -120,7 +126,7 @@ public class PickupManager : MonoBehaviour
             return true;
         } else
         {
-            Debug.Log("Cam failed, none in range");
+            //Debug.Log("Cam failed, none in range");
             return false;
         }
     }
@@ -134,7 +140,9 @@ public class PickupManager : MonoBehaviour
         held = target;
         isHolding = true;
         //notify the pickup
-        target.gameObject.GetComponent<PickupItem>().ChildPickup(gameObject);
+        target.GetComponent<PickupItem>().ChildPickup();
+        //notify subscribers
+        PickupEvent?.Invoke(held, EventArgs.Empty);
     }
     public GameObject GetHeld()
     {

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //enables an object to be eligible for being picked up by the cat
-//reminder that the child is responsible for managing its own physics
+//notifies other objects when it is picked up (TODO: Implement a subscriber system)
+
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Collider))]
 
@@ -31,12 +32,13 @@ public class PickupItem : MonoBehaviour
         }
     }
     //called AFTER this object is picked up and locked  
-    public void ChildPickup(GameObject whoPickedUp)
+    public void ChildPickup()
     {
         beingHeld = true;
         rb.isKinematic = true;
         gameObject.transform.localPosition = ownOffsetPos;
         gameObject.transform.localRotation = Quaternion.Euler(ownOffsetRot);
+
     }
     //called AFTER this object is unlocked and dropped
     public void ChildDrop(GameObject whoDropped)
@@ -46,6 +48,7 @@ public class PickupItem : MonoBehaviour
         transform.SetParent(null);
         rb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
         rb.AddForce(whoDropped.transform.forward * launchPower, ForceMode.Impulse);
+
     }
 
 }
