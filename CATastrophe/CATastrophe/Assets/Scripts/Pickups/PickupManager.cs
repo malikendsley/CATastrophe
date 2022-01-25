@@ -57,12 +57,14 @@ public class PickupManager : MonoBehaviour
         }
     }
 
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawWireSphere(gameObject.transform.position + colliderCenter, pickupDistance);
+    }
     private void OnDrawGizmos()
     {
         Gizmos.DrawIcon(pickupAnchor.transform.position, "anchor.png", true);
-        Gizmos.DrawWireSphere(gameObject.transform.position + colliderCenter, pickupDistance);
     }
-
 
     public void Interact()  
     {

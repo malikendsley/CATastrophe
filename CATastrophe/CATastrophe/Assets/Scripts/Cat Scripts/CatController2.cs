@@ -36,7 +36,7 @@ public class CatController2 : MonoBehaviour
     //pickup system
     private PickupManager pm;
 
-    void OnDrawGizmos()
+    void OnDrawGizmosSelected()
     {
 
         if (isGrounded)

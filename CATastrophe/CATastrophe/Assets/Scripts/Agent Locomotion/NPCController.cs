@@ -16,13 +16,11 @@ public class NPCController : MonoBehaviour
     [Tooltip("The range at which the NPC is considered \"home.\" this makes for less stutter")]
     public float homeDist = .25f;
     [Tooltip("The range at which the NPC will try to seize their pickup")]
-    public float seizeRadius = .5f;
+    public float interactRadius = .5f;
     [Tooltip("Outside of this range the AI will give up on chasing the player")]
     public float detectionRadius = 10;
     [Tooltip("This list is the Pickups that the AI will react to")]
     public GameObject pickup;
-    [Tooltip("The AI will go back over here if it has nothing else to do")]
-    public Vector3 returnLocation;
     [Tooltip("The AI makes decisions every AITickrate seconds, turn this up for a sluggish but more performant AI")]
     public float AITickrate = .5f;
 
@@ -30,15 +28,14 @@ public class NPCController : MonoBehaviour
     public GameObject pickupAnchor;
 
     //only public for debugging
-    public bool active = false;
     public bool itemStolen = false;
     public bool carrying = false;
-    public bool returning = false;
     private int id;
     private NavMeshAgent agent;
+    private Vector3 pickupLocation;
+    private Vector3 returnLocation;
 
-
-    void Start()
+    private void Start()
     {
         //like and subscribe
         agent = GetComponent<NavMeshAgent>();
@@ -46,21 +43,30 @@ public class NPCController : MonoBehaviour
         CatPickupManager.DropEvent += ReactDrop;
         id = GetInstanceID();
         returnLocation = new Vector3(transform.position.x, 0, transform.position.z);
+        pickupLocation = pickup.transform.position;
         StartCoroutine(AITick());
         agent.speed = NPCSpeed;
     }
 
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawWireSphere(transform.position, interactRadius);
+        Gizmos.DrawWireSphere(transform.position, detectionRadius);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(pickup.transform.position, interactRadius);
+    }
+
     //Choose the highest priority task and perform it for 1 tick
     //TODO Convert this to a state enum
-    IEnumerator AITick()
+    private IEnumerator AITick()
     {
         while (true)
         {
             yield return new WaitForSeconds(AITickrate);
-            //if close enough to spawn with an item put it down
-            if (HomeCheck() && carrying)
+            //if close enough to pickup location with an item put it down
+            if (isPickupInRange() && carrying)
             {
-                Debug.Log("Priority 1. Put Down Item");
+                Debug.Log("Put Down Item");
                 NPCDrop(pickup);
                 continue;
             }
@@ -68,36 +74,36 @@ public class NPCController : MonoBehaviour
             //if holding a pickup go back to spawn
             if (carrying)
             {
-                Debug.Log("Priority 2. Return Held Item");
-                agent.SetDestination(returnLocation);
+                Debug.Log("Return Held Item");
+                agent.SetDestination(pickupLocation);
                 continue;
             }
             else
             //if the player drops an item go pick it up
-            if (DetectionCheck() && !carrying && !itemStolen && returning)
+            if (isCatDetected() && !carrying && !itemStolen && isPickupDisplaced())
             {
-                Debug.Log("Priority 3. Retrieve Dropped Item");
+                Debug.Log("Retrieve Dropped Item");
                 Retrieve();
                 continue;
             }
             else
             //if npc in range and in chase mode try to seize item
-            if (SeizeCheck() && itemStolen)
+            if (isInSeizeRange() && itemStolen)
             {
-                Debug.Log("Priority 4. Seize Item, In Range");
+                Debug.Log("Seize Item, In Range");
                 StartCoroutine(TrySeize());
                 continue;
             }
             else
             //if player holding stolen item chase them
-            if (!SeizeCheck() && DetectionCheck() && itemStolen && !carrying)
+            if (!isInSeizeRange() && isCatDetected() && itemStolen && !carrying)
             {
                 Debug.Log("Seek Player");
                 agent.SetDestination(cat.transform.position);
                 continue;
             }
             else
-            if (!HomeCheck())
+            if (!isNPCHome())
             //if out of spawn and player out of range go home
             {
                 Debug.Log("Return to spawn");
@@ -107,23 +113,24 @@ public class NPCController : MonoBehaviour
             else
             //otherwise idle
             {
-                Debug.Log("Priority 7. Idle");
+                Debug.Log("Idle");
             }
         }
     }
 
-    IEnumerator TrySeize()
+    private IEnumerator TrySeize()
     {
         //wait
         yield return new WaitForSeconds(seizeDelay);
         //check if cat is gone
-        if (SeizeCheck())
+        if (isInSeizeRange())
         {
             Debug.Log("Seize Successful");
             SeizeFromPlayer();
         }
     }
-    void SeizeFromPlayer()
+
+    private void SeizeFromPlayer()
     {
         Debug.Log("Seized From Player");
         carrying = true;
@@ -133,23 +140,23 @@ public class NPCController : MonoBehaviour
     }
 
     //move toward pickup or if close enough pick it up
-    void Retrieve()
+    private void Retrieve()
     {
-        if (Vector3.Distance(transform.position, pickup.transform.position) < seizeRadius)
+        if (isPickupDisplaced())
         {
             NPCPickup(pickup);
         }
         else
         {
             agent.SetDestination(new Vector3(pickup.transform.position.x, 0, pickup.transform.position.z));
-            returning = true;
         }
     }
 
-    void NPCPickup(GameObject target)
+    private void NPCPickup(GameObject target)
     {
         //state management
         carrying = true;
+        itemStolen = false;
         //lock target to anchor
         target.transform.SetParent(pickupAnchor.transform);
         target.transform.localPosition = Vector3.zero;
@@ -161,7 +168,7 @@ public class NPCController : MonoBehaviour
     }
 
     //can refactor later
-    void NPCDrop(GameObject held)
+    private void NPCDrop(GameObject held)
     {
         //state management
         carrying = false;
@@ -170,54 +177,40 @@ public class NPCController : MonoBehaviour
         //call function on pickup
         held.GetComponent<PickupItem>().ChildDrop(gameObject);
     }
-    bool HomeCheck()
-    {
-        return (Vector3.Distance(transform.position, returnLocation) < homeDist);
-    }
-    bool SeizeCheck()
-    {
-        if (Vector3.Distance(cat.transform.position, transform.position) < seizeRadius)
-        {
-            //Debug.Log("Seize In Range");
-            return true;
-        }
-        else
-        {
-            //Debug.Log("Seize Not In Range");
-            return false;
-        }
-    }
-    bool DetectionCheck()
-    {
-        //Debug.Log("Out of range");
-        return Vector3.Distance(cat.transform.position, transform.position) < detectionRadius;
-    }
-    void ReactPickup(object sender, EventArgs e)
+    #region Checks
+    private bool isPickupInRange() => Vector3.Distance(transform.position, pickupLocation) < interactRadius;
+    private bool isPickupDisplaced() => Vector3.Distance(pickup.transform.position, pickupLocation) > interactRadius;
+    private bool isNPCHome() => Vector3.Distance(transform.position, returnLocation) < homeDist;
+
+    private bool isInSeizeRange() => Vector3.Distance(cat.transform.position, transform.position) < interactRadius;
+    private bool isCatDetected() => Vector3.Distance(cat.transform.position, transform.position) < detectionRadius;
+
+    private void ReactPickup(object sender, EventArgs e)
     {
         Debug.Log(sender);
         if (ReferenceEquals(pickup, sender))
         {
             Debug.Log("Pickup matches NPC-" + id + "'s watching list");
             itemStolen = true;
-            active = true;
         }
         else
         {
             Debug.Log("NPC-" + id + " ignoring pickup");
         }
     }
-    void ReactDrop(object sender, EventArgs e)
+
+    private void ReactDrop(object sender, EventArgs e)
     {
         Debug.Log(sender);
         if (ReferenceEquals(pickup, sender))
         {
             Debug.Log("Drop matches NPC-" + id + "'s watching list");
             itemStolen = false;
-            active = false;
         }
         else
         {
             Debug.Log("NPC-" + id + " ignoring drop");
         }
     }
+    #endregion
 }
