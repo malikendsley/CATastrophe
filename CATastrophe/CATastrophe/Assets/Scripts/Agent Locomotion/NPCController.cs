@@ -45,7 +45,7 @@ public class NPCController : MonoBehaviour
         CatPickupManager.PickupEvent += ReactPickup;
         CatPickupManager.DropEvent += ReactDrop;
         id = GetInstanceID();
-        returnLocation = transform.position;
+        returnLocation = new Vector3(transform.position.x, 0, transform.position.z);
         StartCoroutine(AITick());
         agent.speed = NPCSpeed;
     }
@@ -57,7 +57,6 @@ public class NPCController : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(AITickrate);
-            agent.SetDestination(transform.position);
             //if close enough to spawn with an item put it down
             if (HomeCheck() && carrying)
             {

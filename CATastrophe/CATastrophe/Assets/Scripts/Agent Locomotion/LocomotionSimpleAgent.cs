@@ -41,9 +41,9 @@ public class LocomotionSimpleAgent : MonoBehaviour {
 		if (lookAt)
 			lookAt.lookAtTargetPosition = agent.steeringTarget + transform.forward;
 
-//		// Pull character towards agent
-//		if (worldDeltaPosition.magnitude > agent.radius)
-//			transform.position = agent.nextPosition - 0.9f*worldDeltaPosition;
+		// Pull character towards agent
+		if (worldDeltaPosition.magnitude > agent.radius)
+			transform.position = agent.nextPosition - 0.9f*worldDeltaPosition;
 
 //		// Pull agent towards character
 //		if (worldDeltaPosition.magnitude > agent.radius)
