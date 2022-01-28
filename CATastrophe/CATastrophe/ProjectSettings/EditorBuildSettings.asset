@@ -4,6 +4,12 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/TitleScreen/TitleScreen.unity
+    guid: 74310c047e1813944a81117c31957166
+  - enabled: 1
+    path: Assets/Scenes/PickupTest/PickupTest.unity
+    guid: 89512e3c11934de42a4e3e7e7442c703
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 7f340f86be2d4284e8696686a30b324d, type: 2}
