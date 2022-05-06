@@ -4,11 +4,11 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class CatController2 : MonoBehaviour
 {
-    //cat integration (lol)
-    public GameObject catBody;
 
-    //cam integration
-    private Transform cam;
+    [SerializeField]
+    private GameObject cam;
+    private Transform camTransform;
+
 
     //locomotion
     private CharacterController controller;
@@ -31,6 +31,7 @@ public class CatController2 : MonoBehaviour
     public float jumpHeight = 1;
 
     //pickup system
+    [SerializeField]
     private PickupManager pm;
 
     void OnDrawGizmosSelected()
@@ -49,11 +50,9 @@ public class CatController2 : MonoBehaviour
 
     void Start()
     {
-        //clean but annoying to change, may revisit
-        cam = gameObject.transform.Find("Main Camera");
+        camTransform = cam.transform;
         controller = GetComponent<CharacterController>();
         lastPos = gameObject.transform.position;
-        pm = catBody.GetComponent<PickupManager>();
 
     }
     void Update()
@@ -85,7 +84,7 @@ public class CatController2 : MonoBehaviour
 
         if (direction.magnitude > moveDeadzone)
         {
-            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
+            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + camTransform.eulerAngles.y;
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref smoothVelocity, turnSmoothTime);
             transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
@@ -97,7 +96,7 @@ public class CatController2 : MonoBehaviour
         }
 
         //handle interact
-        if (interact)
+        if (interact && pm != null)
         {
             Debug.Log("Try Interact");
             pm.Interact();
