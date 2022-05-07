@@ -16,12 +16,11 @@ public class CatController2 : MonoBehaviour
     public float moveDeadzone = 0.1f;
     public float turnSmoothTime = 0.1f;
     public bool canMove = true;
-    public bool animate = true;
     private float smoothVelocity;
     private Vector3 thisPos;
     private Vector3 lastPos;
 
-    //imported from Limina
+    //taken from Limina
     public LayerMask groundMask;
     public Transform groundCheck;
     public float gravity = -9.81f;
@@ -69,10 +68,7 @@ public class CatController2 : MonoBehaviour
 
         //handle gravity / jumping
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-        if (isGrounded && velocity.y < 0)
-        {
-            velocity.y = -2f;
-        }
+
 
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
@@ -104,5 +100,10 @@ public class CatController2 : MonoBehaviour
 
         //housekeeping
         lastPos = thisPos;
+    }
+
+    public bool getGrounded()
+    {
+        return isGrounded;
     }
 }
