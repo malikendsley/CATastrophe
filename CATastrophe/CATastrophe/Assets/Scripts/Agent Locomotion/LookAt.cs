@@ -10,6 +10,7 @@ public class LookAt : MonoBehaviour {
 	public float lookAtHeatTime = 0.2f;
 	public bool looking = true;
 
+
 	private Vector3 lookAtPosition;
 	private Animator anim;
 	private float lookAtWeight = 0.0f;
