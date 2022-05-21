@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2681153668216414293
+--- !u!1 &1333387024141028569
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,30 +8,30 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3350273102330608367}
+  - component: {fileID: 1858566916893496931}
   m_Layer: 0
-  m_Name: Building2_Small
+  m_Name: Building2_Small 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3350273102330608367
+--- !u!4 &1858566916893496931
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2681153668216414293}
+  m_GameObject: {fileID: 1333387024141028569}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 2742335451917126583}
+  - {fileID: 1277545586676459323}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &6393023421103806604
+--- !u!1 &8002034036931949568
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -39,9 +39,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2742335451917126583}
-  - component: {fileID: 1070049991333589757}
-  - component: {fileID: 4610611714767591017}
+  - component: {fileID: 1277545586676459323}
+  - component: {fileID: 4138227160627666545}
+  - component: {fileID: 596821012351744741}
   m_Layer: 0
   m_Name: default
   m_TagString: Untagged
@@ -49,35 +49,35 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2742335451917126583
+--- !u!4 &1277545586676459323
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6393023421103806604}
+  m_GameObject: {fileID: 8002034036931949568}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 3350273102330608367}
+  m_Father: {fileID: 1858566916893496931}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &1070049991333589757
+--- !u!33 &4138227160627666545
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6393023421103806604}
-  m_Mesh: {fileID: -2432090755550338912, guid: 59a5cbc8371830d458d56279c0edc970, type: 3}
---- !u!23 &4610611714767591017
+  m_GameObject: {fileID: 8002034036931949568}
+  m_Mesh: {fileID: -2432090755550338912, guid: 793348081c5f85f4c978b4ed356ec430, type: 3}
+--- !u!23 &596821012351744741
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6393023421103806604}
+  m_GameObject: {fileID: 8002034036931949568}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -90,13 +90,13 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -91986665691257589, guid: 59a5cbc8371830d458d56279c0edc970, type: 3}
-  - {fileID: -2867747967464863736, guid: 59a5cbc8371830d458d56279c0edc970, type: 3}
-  - {fileID: -4770390735465466038, guid: 59a5cbc8371830d458d56279c0edc970, type: 3}
-  - {fileID: -5243988174349660497, guid: 59a5cbc8371830d458d56279c0edc970, type: 3}
-  - {fileID: -8848810374240701247, guid: 59a5cbc8371830d458d56279c0edc970, type: 3}
-  - {fileID: -2588933649015344934, guid: 59a5cbc8371830d458d56279c0edc970, type: 3}
-  - {fileID: 3358427529709114468, guid: 59a5cbc8371830d458d56279c0edc970, type: 3}
+  - {fileID: -91986665691257589, guid: 793348081c5f85f4c978b4ed356ec430, type: 3}
+  - {fileID: -2867747967464863736, guid: 793348081c5f85f4c978b4ed356ec430, type: 3}
+  - {fileID: -4770390735465466038, guid: 793348081c5f85f4c978b4ed356ec430, type: 3}
+  - {fileID: -5243988174349660497, guid: 793348081c5f85f4c978b4ed356ec430, type: 3}
+  - {fileID: -8848810374240701247, guid: 793348081c5f85f4c978b4ed356ec430, type: 3}
+  - {fileID: -2588933649015344934, guid: 793348081c5f85f4c978b4ed356ec430, type: 3}
+  - {fileID: 3358427529709114468, guid: 793348081c5f85f4c978b4ed356ec430, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
