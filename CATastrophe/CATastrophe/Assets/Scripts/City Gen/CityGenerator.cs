@@ -1,7 +1,6 @@
 using JetBrains.Annotations;
 using System.Text;
 using UnityEngine;
-
 public class CityGenerator : MonoBehaviour
 {
 
@@ -38,8 +37,15 @@ public class CityGenerator : MonoBehaviour
     //13 = l shaped alley
 
     //look into a primitive marching squares-esque system for this
-    [UsedImplicitly]
-    private void Awake()
+    [InspectorButton("OnButtonClicked")]
+    public bool GenerateCityButton;
+
+    private void OnButtonClicked()
+    {
+        GenerateCity();
+    }
+
+    private void GenerateCity()
     {
         GenerateTileGrid();
         PrettyPrintGrid(_posGrid);
@@ -207,9 +213,9 @@ public class CityGenerator : MonoBehaviour
                 //bounds checking, then check if each adjacent tile is a road, once one is, the T faces away from it
                 if (z + 1 < ZSize && _posGrid[z + 1, x] > 9)
                     return 3;
-                if (z - 1 > 0 && _posGrid[z + 1, x] > 9)
+                if (z - 1 >= 0 && _posGrid[z - 1, x] > 9)
                     return 1;
-                if (x - 1 > 0 && _posGrid[z, x - 1] > 9)
+                if (x - 1 >= 0 && _posGrid[z, x - 1] > 9)
                     return 2;
                 return 0;
             default:
