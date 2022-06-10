@@ -34,7 +34,7 @@ public class CatAnimator : MonoBehaviour
         float vertSpeed = Mathf.Clamp(dy * animWalkTune, -1, 1);
         anim.SetFloat("vertical speed", vertSpeed);
         anim.SetFloat("speed", curspeed * animWalkTune);
-        bool grounded = cc.getGrounded();
+        bool grounded = cc.GetGrounded();
         anim.SetBool("grounded", grounded);
 
         Debug.Log("Speed: " + curspeed * animWalkTune + " Vert: " + vertSpeed + " Grounded: " + grounded);

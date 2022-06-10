@@ -286,7 +286,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3083972426724654847}
-  m_LocalRotation: {x: 0.15602203, y: 0.00000001793741, z: 0.0000000037108232, w: 0.9877536}
+  m_LocalRotation: {x: 0.15602203, y: -0.00000001793741, z: -0.0000000037108232, w: 0.9877536}
   m_LocalPosition: {x: 0, y: 1.5888168, z: -4.2697263}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -562,7 +562,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3083972427073835568}
-  m_LocalRotation: {x: 0.14131068, y: -0.00000001703372, z: 0.0000000024314462, w: 0.9899653}
+  m_LocalRotation: {x: 0.14131068, y: 0.00000001703372, z: -0.0000000024314462, w: 0.9899653}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2363,21 +2363,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &2776153945030442867
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3046553878275455504}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c765bdc114962784ab3c143919519c6b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cc: {fileID: 2776153945030442866}
-  anim: {fileID: 2776153945030442871}
-  animWalkTune: 500
 --- !u!114 &2776153945030442866
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2403,6 +2388,21 @@ MonoBehaviour:
   groundDistance: 0.19
   jumpHeight: 1
   pm: {fileID: 2776153945030442868}
+--- !u!114 &2776153945030442867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3046553878275455504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c765bdc114962784ab3c143919519c6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cc: {fileID: 2776153945030442866}
+  anim: {fileID: 2776153945030442871}
+  animWalkTune: 500
 --- !u!114 &2776153945030442868
 MonoBehaviour:
   m_ObjectHideFlags: 0
