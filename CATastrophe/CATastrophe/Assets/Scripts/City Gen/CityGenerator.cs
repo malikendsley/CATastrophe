@@ -1,4 +1,3 @@
-using JetBrains.Annotations;
 using System.Text;
 using UnityEngine;
 public class CityGenerator : MonoBehaviour
@@ -202,20 +201,27 @@ public class CityGenerator : MonoBehaviour
         //1 = 90 deg ccw
         //2 = 180 deg ccw
         //3 = 180 deg ccw
+        if (z >= ZSize && x >= XSize)
+        {
+            return 0;
+        }
         var roadType = _posGrid[z, x];
         switch (roadType)
         {
             case 1:
                 //roads default to left right, check the tile above, if its a road rotate 90 otherwise leave it
-                return z + 1 < ZSize && _posGrid[z + 1, x] < 10 ? 1 : 0;
+                if (z + 1 >= ZSize || _posGrid[z + 1, x] < 10)
+                    return 1;
+                else
+                    return 0;
             case 2:
                 //the blocked section of a t road is facing right (+X) by default
-                //bounds checking, then check if each adjacent tile is a road, once one is, the T faces away from it
-                if (z + 1 < ZSize && _posGrid[z + 1, x] > 9)
-                    return 3;
-                if (z - 1 >= 0 && _posGrid[z - 1, x] > 9)
+                //out of bounds is equivalent to the face away direction
+                if (z + 1 >= ZSize || _posGrid[z + 1, x] > 9)
                     return 1;
-                if (x - 1 >= 0 && _posGrid[z, x - 1] > 9)
+                if (z - 1 < 0 || _posGrid[z - 1, x] > 9)
+                    return 3;
+                if (x - 1 < 0 || _posGrid[z, x - 1] > 9)
                     return 2;
                 return 0;
             default:
@@ -231,7 +237,7 @@ public class CityGenerator : MonoBehaviour
         //2 = top right corner      180 deg ccw
         //3 = top left corner       180 deg ccw
         var isUpTileRoad = (z + 1 < ZSize && _posGrid[z + 1, x] < 10);
-        var isLeftTileRoad = (x - 1 > 0 && _posGrid[z, x - 1] < 10);
+        var isLeftTileRoad = (x - 1 >= 0 && _posGrid[z, x - 1] < 10);
 
         if (isUpTileRoad)
         {
