@@ -35,15 +35,7 @@ public class CatController2 : MonoBehaviour
 
     void OnDrawGizmosSelected()
     {
-
-        if (isGrounded)
-        {
-            Gizmos.color = Color.green;
-        }
-        else
-        {
-            Gizmos.color = Color.red;
-        }
+        Gizmos.color = isGrounded ? Color.green : Color.red;
         Gizmos.DrawSphere(groundCheck.position, groundDistance);
     }
 
@@ -67,6 +59,7 @@ public class CatController2 : MonoBehaviour
         Vector3 direction = new Vector3(h, 0, v);
 
         //handle gravity / jumping
+
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
 
@@ -75,6 +68,7 @@ public class CatController2 : MonoBehaviour
             Debug.Log("Jumped");
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
+
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
 
@@ -102,7 +96,7 @@ public class CatController2 : MonoBehaviour
         lastPos = thisPos;
     }
 
-    public bool getGrounded()
+    public bool GetGrounded()
     {
         return isGrounded;
     }

@@ -67,7 +67,7 @@ public class NPCController : MonoBehaviour
             if (isPickupInRange() && carrying)
             {
                 Debug.Log("Put Down Item");
-                NPCDrop(pickup);
+                NpcDrop(pickup);
                 continue;
             }
             else
@@ -123,11 +123,9 @@ public class NPCController : MonoBehaviour
         //wait
         yield return new WaitForSeconds(seizeDelay);
         //check if cat is gone
-        if (isInSeizeRange())
-        {
-            Debug.Log("Seize Successful");
-            SeizeFromPlayer();
-        }
+        if (!isInSeizeRange()) yield break;
+        Debug.Log("Seize Successful");
+        SeizeFromPlayer();
     }
 
     private void SeizeFromPlayer()
@@ -136,7 +134,7 @@ public class NPCController : MonoBehaviour
         carrying = true;
         itemStolen = false;
         cat.GetComponent<PickupManager>().Drop();
-        NPCPickup(pickup);
+        NpcPickup(pickup);
     }
 
     //move toward pickup or if close enough pick it up
@@ -144,7 +142,7 @@ public class NPCController : MonoBehaviour
     {
         if (isPickupDisplaced())
         {
-            NPCPickup(pickup);
+            NpcPickup(pickup);
         }
         else
         {
@@ -152,7 +150,7 @@ public class NPCController : MonoBehaviour
         }
     }
 
-    private void NPCPickup(GameObject target)
+    private void NpcPickup(GameObject target)
     {
         //state management
         carrying = true;
@@ -168,7 +166,7 @@ public class NPCController : MonoBehaviour
     }
 
     //can refactor later
-    private void NPCDrop(GameObject held)
+    private void NpcDrop(GameObject held)
     {
         //state management
         carrying = false;

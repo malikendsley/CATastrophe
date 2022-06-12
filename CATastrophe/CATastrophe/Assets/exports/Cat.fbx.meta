@@ -79,7 +79,7 @@ ModelImporter:
       name: rig|Jump
       takeName: rig|Jump
       internalID: 0
-      firstFrame: 0
+      firstFrame: 8.6
       lastFrame: 9
       wrapMode: 0
       orientationOffsetY: 0
@@ -138,7 +138,7 @@ ModelImporter:
       takeName: rig|Land
       internalID: 0
       firstFrame: 0
-      lastFrame: 4
+      lastFrame: 0.1
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
