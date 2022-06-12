@@ -15,7 +15,9 @@ public class CatAnimator : MonoBehaviour
     private float curspeed;
     public Animator anim;
     public float animWalkTune = 500;
+    public float animJumpTune = 100;
 
+    [Range(-1, 1), SerializeField] private float vertSpeed;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,15 +25,14 @@ public class CatAnimator : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         //find out how far you've walked since last frame
         thisPos = gameObject.transform.position;
         curspeed = Vector3.Distance(new Vector3(thisPos.x, 0, thisPos.z), new Vector3(lastPos.x, 0, lastPos.z));
 
         //find out where in the jump arc you are
-        float dy = thisPos.y - lastPos.y;
-        float vertSpeed = Mathf.Clamp(dy * animWalkTune, -1, 1);
+        vertSpeed = Mathf.Clamp((thisPos.y - lastPos.y) * animJumpTune, -1, 1);
         anim.SetFloat("vertical speed", vertSpeed);
         anim.SetFloat("speed", curspeed * animWalkTune);
         bool grounded = cc.GetGrounded();
@@ -42,4 +43,6 @@ public class CatAnimator : MonoBehaviour
         lastPos = thisPos;
 
     }
+
+
 }

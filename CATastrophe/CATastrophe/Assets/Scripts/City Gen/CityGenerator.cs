@@ -1,5 +1,7 @@
 using System.Text;
 using UnityEngine;
+using UnityEngine.AI;
+
 public class CityGenerator : MonoBehaviour
 {
 
@@ -8,6 +10,9 @@ public class CityGenerator : MonoBehaviour
     public int XSize = 12;
     public int ZSize = 12;
 
+    //allows building a mesh when city is created
+    [SerializeField]
+    private NavMeshSurface _surface;
 
     [Range(0, 100)]
     public int AlleyDensity = 50;
@@ -42,6 +47,7 @@ public class CityGenerator : MonoBehaviour
     private void OnButtonClicked()
     {
         GenerateCity();
+
     }
 
     private void GenerateCity()
@@ -51,6 +57,9 @@ public class CityGenerator : MonoBehaviour
         GenerateRotGrid();
         PrettyPrintGrid(_rotGrid);
         ParseGrid(_posGrid);
+        _surface.RemoveData();
+        _surface.BuildNavMesh();
+        
     }
 
     private void GenerateTileGrid()
