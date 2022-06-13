@@ -12,9 +12,9 @@ NavMeshProjectSettings:
   - name: Jump
     cost: 2
   - name: Road
-    cost: 3
-  - name: 
-    cost: 1
+    cost: 12
+  - name: Alley
+    cost: 2
   - name: 
     cost: 1
   - name: 
