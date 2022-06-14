@@ -1,18 +1,21 @@
-using System.Text;
+using System;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 public class CityGenerator : MonoBehaviour
 {
 
     public int TileSideLength = 2;
-    //recommended these be divisible by 3
+
     public int XSize = 12;
     public int ZSize = 12;
 
+    public int ParkCount = 0;
+    
     //allows building a mesh when city is created
-    [SerializeField]
-    private NavMeshSurface _surface;
+    public NavMeshSurface _surface;
 
     [Range(0, 100)]
     public int AlleyDensity = 50;
@@ -30,9 +33,10 @@ public class CityGenerator : MonoBehaviour
     public GameObject StraightAlley;
     public GameObject LAlley;
 
+    public GameObject BeachStraight;
+    public GameObject BeachCorner;
 
-
-    //1 = straight piece
+        //1 = straight piece
     //2 = t shaped piece
     //3 = 4 way piece
 
@@ -44,6 +48,7 @@ public class CityGenerator : MonoBehaviour
     [InspectorButton("OnButtonClicked")]
     public bool GenerateCityButton;
 
+    [UsedImplicitly]
     private void OnButtonClicked()
     {
         GenerateCity();
@@ -53,10 +58,9 @@ public class CityGenerator : MonoBehaviour
     private void GenerateCity()
     {
         GenerateTileGrid();
-        PrettyPrintGrid(_posGrid);
         GenerateRotGrid();
-        PrettyPrintGrid(_rotGrid);
-        ParseGrid(_posGrid);
+        LayBeach();
+        ParseGrid(_posGrid, _rotGrid);
         _surface.RemoveData();
         _surface.BuildNavMesh();
         
@@ -157,13 +161,43 @@ public class CityGenerator : MonoBehaviour
         }
     }
 
-    private void ParseGrid(int[,] posGrid)
+    private void PlaceParks()
     {
-        for (var x = 0; x < XSize; x++)
+        //figure out maximum parks possible in a given city size and clamp given value to that
+    }
+
+    private void LayBeach()
+    {
+        var newPosGrid = Pad(_posGrid);
+        var newRotGrid = Pad(_rotGrid);
+
+        for (var z = 0; z < ZSize + 2; z++)
         {
-            for (var z = 0; z < XSize; z++)
+            newPosGrid[z, 0] = 21;
+            newPosGrid[z, XSize + 1] = 21;
+            newRotGrid[z, 0] = 1;
+            newRotGrid[z, XSize + 1] = 3;
+        }
+
+        for (var x = 0; x < XSize + 2; x++)
+        {
+            newPosGrid[0, x] = 21;
+            newPosGrid[ZSize + 1, x] = 21;
+            newRotGrid[0, x] = 2;
+            newRotGrid[ZSize + 1, x] = 0;
+        }
+
+        _posGrid = newPosGrid;
+        _rotGrid = newRotGrid;
+    }
+
+    private void ParseGrid(int[,] posGrid, int[,] rotGrid)
+    {
+        for (var x = 0; x < posGrid.GetLength(1); x++)
+        {
+            for (var z = 0; z < posGrid.GetLength(0); z++)
             {
-                var rot = Quaternion.Euler(new Vector3(0, _rotGrid[z, x] * -90, 0));
+                var rot = Quaternion.Euler(new Vector3(0, rotGrid[z, x] * -90, 0));
                 var chosen = posGrid[z, x] switch
                 {
                     1 => StraightRoad,
@@ -172,27 +206,13 @@ public class CityGenerator : MonoBehaviour
                     11 => SolidHouse,
                     12 => StraightAlley,
                     13 => LAlley,
+                    21 => BeachStraight,
+                    22 => BeachCorner,
                     _ => CrossRoad
                 };
                 GameObject.Instantiate(chosen, new Vector3(x, 0, z) * TileSideLength, rot);
             }
         }
-    }
-
-    //honestly not that pretty
-    private static void PrettyPrintGrid(int[,] grid)
-    {
-        var sb = new StringBuilder();
-        for (var i = 0; i < grid.GetLength(1); i++)
-        {
-            for (var j = 0; j < grid.GetLength(0); j++)
-            {
-                sb.Append(grid[i, j]);
-                sb.Append(' ');
-            }
-            sb.AppendLine();
-        }
-        Debug.Log(sb.ToString());
     }
 
     private int GenHouse()
@@ -210,16 +230,13 @@ public class CityGenerator : MonoBehaviour
         //1 = 90 deg ccw
         //2 = 180 deg ccw
         //3 = 180 deg ccw
-        if (z >= ZSize && x >= XSize)
-        {
-            return 0;
-        }
+        
         var roadType = _posGrid[z, x];
         switch (roadType)
         {
             case 1:
                 //roads default to left right, check the tile above, if its a road rotate 90 otherwise leave it
-                if (z + 1 >= ZSize || _posGrid[z + 1, x] < 10)
+                if (z + 1 < ZSize && _posGrid[z + 1, x] < 10)
                     return 1;
                 else
                     return 0;
@@ -253,5 +270,19 @@ public class CityGenerator : MonoBehaviour
             return isLeftTileRoad ? 3 : 2;
         }
         return isLeftTileRoad ? 0 : 1;
+    }
+
+    public static int[,] Pad(int[,] input)
+    {
+        var h = input.GetLength(0);
+        var w = input.GetLength(1);
+        var output = new int[h + 2, w + 2];
+
+        for (var r = 0; r < h; ++r)
+        {
+            Array.Copy(input, r * w, output, (r + 1) * (w + 2) + 1, w);
+        }
+
+        return output;
     }
 }
