@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3990460599126768918}
   - component: {fileID: 3990460599126768913}
   - component: {fileID: 6750793669572828905}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Solid House
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -876546973899608171, guid: 1ec1645497b4e0b46b658ca5c12ca3bd, type: 3}
+  - {fileID: 2100000, guid: f5faad0292f29164094da882147ee928, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

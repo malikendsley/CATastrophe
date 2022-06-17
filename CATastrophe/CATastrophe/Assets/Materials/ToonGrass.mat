@@ -108,11 +108,11 @@ Material:
     - Vector1_ebb3ac4d5b6d4872867a299748aa215d: 0.52
     - _AlphaClip: 0
     - _BendDelta: 0
-    - _BladeBendCurve: 1.89
+    - _BladeBendCurve: 1.76
     - _BladeBendDistance: 0.28
     - _BladeHeightMax: 0.3
     - _BladeHeightMin: 0.3
-    - _BladeSegments: 2.5
+    - _BladeSegments: 2.57
     - _BladeWidthMax: 0.1
     - _BladeWidthMin: 0.1
     - _Blend: 0
@@ -129,7 +129,7 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _GrassFalloff: 0
-    - _GrassThreshold: 1
+    - _GrassThreshold: 0.952
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005

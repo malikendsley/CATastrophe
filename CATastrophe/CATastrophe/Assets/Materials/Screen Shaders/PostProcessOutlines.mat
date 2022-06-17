@@ -24,7 +24,7 @@ Material:
   m_Shader: {fileID: -6465566751694194690, guid: ce5331c372aa95b499adc63552337bbd, type: 3}
   m_ShaderKeywords: REQUIRE_DEPTH_TEXTURE REQUIRE_OPAQUE_TEXTURE
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -92,10 +92,10 @@ Material:
     - Vector1_172eca6d0d0240a7b4999a16f80c857d: 100
     - Vector1_192c3b7f87c5420191fd99bb879839f0: 100
     - Vector1_2fd1d4829edf492aa4b62ab78223c1cd: 0
-    - Vector1_3517868aedf446888c665f358a41a1a6: 0.5
-    - Vector1_49a692f74f074c6587c8bce0efe5150f: 814.5
-    - Vector1_57bbef7d68fe4ab784b650379131757f: 0.95
-    - Vector1_975bef85dc1c44fe9a80c9802ddbb90f: 0
+    - Vector1_3517868aedf446888c665f358a41a1a6: 20
+    - Vector1_49a692f74f074c6587c8bce0efe5150f: 10000
+    - Vector1_57bbef7d68fe4ab784b650379131757f: 0.6
+    - Vector1_975bef85dc1c44fe9a80c9802ddbb90f: 1
     - Vector1_cae77c38d67c4760954df9d279bf8f28: 0.001
     - _AlphaClip: 0
     - _Blend: 0

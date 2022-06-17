@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1572012095392781554}
   - component: {fileID: 1572012095392781557}
   - component: {fileID: 5183755582980752959}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Straight Alleyway
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -876546973899608171, guid: cce1a34cfcff9734f9e306f1411a15d2, type: 3}
+  - {fileID: 2100000, guid: f5faad0292f29164094da882147ee928, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

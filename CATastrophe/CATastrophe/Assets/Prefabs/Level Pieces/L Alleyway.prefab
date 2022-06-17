@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4040329764015714243}
   - component: {fileID: 4040329764015714240}
   - component: {fileID: 6615151434400980208}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: L Alleyway
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -876546973899608171, guid: cee6233564475b743b3aa718b5142135, type: 3}
+  - {fileID: 2100000, guid: f5faad0292f29164094da882147ee928, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

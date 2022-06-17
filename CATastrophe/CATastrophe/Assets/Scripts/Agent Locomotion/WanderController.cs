@@ -11,17 +11,22 @@ public class WanderController : MonoBehaviour
     [Tooltip("Distance() is slow, and we have a lot of agents. " +
              "This is a fudge factor for checking agent arrival. " +
              "Turn this up if you find agents get stuck.")]
-    public float fudge = 1;
+    public float Fudge = 1;
+
+    public GameObject CatRef;
     
-    public float minRange = 10;
-    public float maxRange = 20;
+    public float MinRange = 10;
+    public float MaxRange = 20;
 
     void OnDrawGizmosSelected()
     {
-        ExtraGizmos.DrawWireDisk(transform.position, minRange, Color.red);
-        ExtraGizmos.DrawWireDisk(transform.position, maxRange, Color.green);
+        ExtraGizmos.DrawWireDisk(CatRef.transform.position, MinRange, Color.red);
+        ExtraGizmos.DrawWireDisk(CatRef.transform.position, MaxRange, Color.green);
         Gizmos.color = Color.yellow;
-        Gizmos.DrawSphere(agent.destination, 1);
+        if (agent != null)
+        {
+            Gizmos.DrawSphere(agent.destination, 1);
+        }
     }
 
     void OnEnable()
@@ -33,7 +38,8 @@ public class WanderController : MonoBehaviour
     void Start()
     {
         //try to set an initial destination
-        agent.SetDestination(ChooseRandomLocation());
+        agent.SetDestination(LooseFollow());
+        agent.stoppingDistance = Fudge;
     }
 
     void Update()
@@ -42,18 +48,27 @@ public class WanderController : MonoBehaviour
         if (!(agent.remainingDistance <= agent.stoppingDistance)) return;
         if (!agent.hasPath || agent.velocity.sqrMagnitude < 0.1f)
         {
-            agent.SetDestination(ChooseRandomLocation());
+            agent.SetDestination(LooseFollow());
         }
-    }
+    }   
     
     // Update is called once per frame
-    Vector3 ChooseRandomLocation()
+    private Vector3 LooseFollow()
     {
-        var randomVector3 = Random.onUnitSphere * Random.Range(minRange, maxRange);
-        var randomDirection = new Vector3(randomVector3.x, 0, randomVector3.z);
-        randomDirection += transform.position;
-        NavMesh.SamplePosition(randomDirection, out var hit, agent.height * 2, 1);
+        var randomVector2 = RandomPointInAnnulus(CatRef.transform.position, MinRange, MaxRange);
+        var randomDirection = new Vector3(randomVector2.x, 0, randomVector2.z); 
+        //Instantiate(GameObject.CreatePrimitive(PrimitiveType.Sphere), randomDirection, Quaternion.identity);
+        NavMesh.SamplePosition(randomDirection, out var hit, agent.height * 2, 1 | 2);
         return hit.position;
-    }           
+    }
+
+    public Vector3 RandomPointInAnnulus(Vector3 origin, float minRadius, float maxRadius)
+    {
+        var randomDistance = Random.Range(minRadius, maxRadius);
+
+        var point = origin + (Random.insideUnitSphere * randomDistance);
+
+        return point;
+    }
 
 }

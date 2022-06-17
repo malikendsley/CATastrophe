@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.AI;
@@ -12,10 +13,10 @@ public class CityGenerator : MonoBehaviour
     public int XSize = 12;
     public int ZSize = 12;
 
-    public int ParkCount = 0;
+    public int ParkCap = 0;
     
     //allows building a mesh when city is created
-    public NavMeshSurface _surface;
+    public NavMeshSurface Surface;
 
     [Range(0, 100)]
     public int AlleyDensity = 50;
@@ -25,10 +26,15 @@ public class CityGenerator : MonoBehaviour
     private int[,] _posGrid;
     private int[,] _rotGrid;
 
+    private readonly List<(int, int)> _parkTargets = new List<(int, int)>();
+    //use this to contain terrain
+    private GameObject _emptyParent;
+    
     public GameObject StraightRoad;
     public GameObject TRoad;
     public GameObject CrossRoad;
-
+    public GameObject CornerRoad;
+    
     public GameObject SolidHouse;
     public GameObject StraightAlley;
     public GameObject LAlley;
@@ -36,7 +42,11 @@ public class CityGenerator : MonoBehaviour
     public GameObject BeachStraight;
     public GameObject BeachCorner;
 
-        //1 = straight piece
+    public GameObject Park;
+
+    private bool _pastClicked;
+    private List<GameObject> _citypieces = new List<GameObject>();
+    //1 = straight piece
     //2 = t shaped piece
     //3 = 4 way piece
 
@@ -51,18 +61,24 @@ public class CityGenerator : MonoBehaviour
     [UsedImplicitly]
     private void OnButtonClicked()
     {
+        if (_pastClicked)
+        {
+            ClearCity();
+        }
         GenerateCity();
-
+        Debug.Log("Past Clicked: " + _pastClicked);
+            _pastClicked = true;
     }
 
     private void GenerateCity()
     {
         GenerateTileGrid();
         GenerateRotGrid();
+        PlaceParks();
         LayBeach();
         ParseGrid(_posGrid, _rotGrid);
-        _surface.RemoveData();
-        _surface.BuildNavMesh();
+        Surface.RemoveData();
+        Surface.BuildNavMesh();
         
     }
 
@@ -129,14 +145,19 @@ public class CityGenerator : MonoBehaviour
                 {
                     _posGrid[z, x] = 2;
                 }
-                if (up && down && left && right)
-                {
-                    _posGrid[z, x] = 3;
-                }
+
+                if (!up || !down || !left || !right) continue;
+                _posGrid[z, x] = 3;
+                _parkTargets.Add((z, x));
             }
         }
-        //Debug.Log("Roads converted");
-        //PrettyPrintGrid(_posGrid);
+
+        //lay out corner pieces at corners of matrix
+        _posGrid[0, 0] = 4;
+        _posGrid[0, XSize - 1] = 4;
+        _posGrid[ZSize - 1, 0] = 4;
+        _posGrid[ZSize - 1, XSize - 1] = 4;
+
     }
 
     private void GenerateRotGrid()
@@ -153,7 +174,7 @@ public class CityGenerator : MonoBehaviour
                 {
                     _rotGrid[z, x] = AlignRoadTile(z, x);
                 }
-                else if (_posGrid[z, x] > 10)
+                else if (_posGrid[z, x] >= 10)
                 {
                     _rotGrid[z, x] = AlignBuildingTile(z, x);
                 }
@@ -163,7 +184,88 @@ public class CityGenerator : MonoBehaviour
 
     private void PlaceParks()
     {
-        //figure out maximum parks possible in a given city size and clamp given value to that
+        Debug.Log("# of park targets: " + _parkTargets.Count);
+        _parkTargets.Shuffle();
+        //cap the number of parks to either number of slots or user defined
+        for (var i = 0; i < Math.Min(_parkTargets.Count, ParkCap); i++)
+        {
+            var (z, x) = _parkTargets[i];
+            //Debug.Log("Evaluating" + z + ", " + x);
+            //check surroundings to avoid placing parks too close
+            bool downValid, leftValid, rightValid;
+            var upValid = downValid = leftValid = rightValid = false;
+
+            var upInBounds = z + 4 < ZSize;
+            var downInBounds = z - 4 >= 0;
+            var leftInBounds = x - 4 >= 0;
+            var rightInBounds = x + 4 < XSize;
+
+            bool urValid, llValid, lrValid;
+            var ulValid = urValid = llValid = lrValid = false;
+            //out of bounds equates to true, short circuit to respect index bounds
+            if (z + 4 >= ZSize || _posGrid[z + 4, x] < 30)
+            {
+                //Debug.Log("Up Valid");
+                upValid = true;
+            }
+            if (z - 4 < 0 || _posGrid[z - 4, x] < 30)
+            {
+                //Debug.Log("Down Valid");
+                downValid = true;
+            }
+            if (x + 4 >= XSize || _posGrid[z, x + 4] < 30)
+            {
+                //Debug.Log("Right Valid");
+                rightValid = true;
+            }
+            if (x - 4 < 0 || _posGrid[z, x - 4] < 30)
+            {
+                //Debug.Log("Left Valid");
+                leftValid = true;
+            }
+            if (upValid && downValid && leftValid && rightValid)
+            {
+                //out of bounds equates to true, short circuit to respect index bounds
+                if (!upInBounds || !leftInBounds || _posGrid[z + 4, x - 4] < 30)
+                {
+                    ulValid = true;
+                }
+
+                if (!upInBounds || !rightInBounds || _posGrid[z + 4, x + 4] < 30)
+                {
+                    urValid = true;
+                }
+
+                if (!downInBounds || !leftInBounds || _posGrid[z - 4, x - 4] < 30)
+                {
+                    llValid = true;
+                }
+
+                if (!downInBounds || !rightInBounds || _posGrid[z - 4, x + 4] < 30)
+                {
+                    lrValid = true;
+                }
+
+                if (ulValid && urValid && llValid && lrValid)
+                {
+                    LayPark(z, x);
+                }
+            }
+        }
+        _parkTargets.Clear();
+    }
+
+    private void LayPark(int z, int x)
+    {
+        for (var i = -2; i <= 2; i++)
+        {
+            for (var j = -2; j <= 2; j++)
+            {
+                _posGrid[z + i, x + j] = 30;
+            }
+        }
+        Debug.Log("Placing Park");
+        _posGrid[z, x] = 31;
     }
 
     private void LayBeach()
@@ -187,12 +289,36 @@ public class CityGenerator : MonoBehaviour
             newRotGrid[ZSize + 1, x] = 0;
         }
 
+        newPosGrid[0, 0] = 22;
+        newPosGrid[0, XSize + 1] = 22;
+        newPosGrid[ZSize + 1, 0] = 22;
+        newPosGrid[ZSize + 1, XSize + 1] = 22;
+
+        newRotGrid[0, 0] = 1;
+        newRotGrid[0, XSize + 1] = 2;
+        newRotGrid[ZSize + 1, 0] = 0;
+        newRotGrid[ZSize + 1, XSize + 1] = 3;
+        
         _posGrid = newPosGrid;
         _rotGrid = newRotGrid;
     }
 
     private void ParseGrid(int[,] posGrid, int[,] rotGrid)
     {
+
+        //ive been doing this manually over and over, just codify it already
+        
+        _emptyParent = new GameObject("Terrain")
+        {
+            transform =
+            {
+                position = Vector3.zero,
+                rotation = Quaternion.identity
+            }
+        };
+        _citypieces.Add(_emptyParent);
+        var parentTransform = _emptyParent.transform;
+
         for (var x = 0; x < posGrid.GetLength(1); x++)
         {
             for (var z = 0; z < posGrid.GetLength(0); z++)
@@ -200,17 +326,26 @@ public class CityGenerator : MonoBehaviour
                 var rot = Quaternion.Euler(new Vector3(0, rotGrid[z, x] * -90, 0));
                 var chosen = posGrid[z, x] switch
                 {
+                    0 => null,
                     1 => StraightRoad,
                     2 => TRoad,
                     3 => CrossRoad,
+                    4 => CornerRoad,
                     11 => SolidHouse,
                     12 => StraightAlley,
                     13 => LAlley,
                     21 => BeachStraight,
                     22 => BeachCorner,
+                    //30 marks the presence of a park but doesn't place one, so that it can be detected in code
+                    30 => null,
+                    //the park prefab is 5x5 tiles and 31 marks the center of it
+                    31 => Park,
                     _ => CrossRoad
                 };
-                GameObject.Instantiate(chosen, new Vector3(x, 0, z) * TileSideLength, rot);
+                if (chosen != null)
+                {
+                    _citypieces.Add(GameObject.Instantiate(chosen, new Vector3(x, 0, z) * TileSideLength, rot, parentTransform));
+                }
             }
         }
     }
@@ -238,8 +373,7 @@ public class CityGenerator : MonoBehaviour
                 //roads default to left right, check the tile above, if its a road rotate 90 otherwise leave it
                 if (z + 1 < ZSize && _posGrid[z + 1, x] < 10)
                     return 1;
-                else
-                    return 0;
+                return 0;
             case 2:
                 //the blocked section of a t road is facing right (+X) by default
                 //out of bounds is equivalent to the face away direction
@@ -250,7 +384,24 @@ public class CityGenerator : MonoBehaviour
                 if (x - 1 < 0 || _posGrid[z, x - 1] > 9)
                     return 2;
                 return 0;
+            case 3:
+                return 0;
+            case 4:
+                //Debug.Log("Aligning at corner");
+                //the blocked section of corner pieces are in the +X and -Z directions at 0 rot
+                var up = (z + 1 < ZSize && _posGrid[z + 1, x] < 10);
+                var left = (x - 1 >= 0 && _posGrid[z, x - 1] < 10);
+
+                return up switch
+                {
+                    true when left => 3,
+                    true => 2,
+                    false when left => 0,
+                    _ => 1
+                };
+
             default:
+                Debug.Log("Defaulting, Error: Road type = " + roadType);
                 return 0;
         }
     }
@@ -285,4 +436,24 @@ public class CityGenerator : MonoBehaviour
 
         return output;
     }
+
+    public void ClearCity()
+    {
+        Debug.Log("Clearing City");
+        _parkTargets.Clear();
+        if (_posGrid != null)
+        {
+            Array.Clear(_posGrid, 0, _posGrid.Length);
+        }
+        if (_rotGrid != null)
+        {
+            Array.Clear(_rotGrid, 0, _rotGrid.Length);
+        }
+
+        foreach (var obj in _citypieces)
+        {
+            DestroyImmediate(obj);
+        }
+    }
 }
+
