@@ -15,8 +15,8 @@ NavMeshProjectSettings:
     cost: 12
   - name: Alley
     cost: 2
-  - name: 
-    cost: 1
+  - name: Water
+    cost: 20
   - name: 
     cost: 1
   - name: 

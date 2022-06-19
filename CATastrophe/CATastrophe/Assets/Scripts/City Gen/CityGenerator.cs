@@ -45,7 +45,7 @@ public class CityGenerator : MonoBehaviour
     public GameObject Park;
 
     private bool _pastClicked;
-    private List<GameObject> _citypieces = new List<GameObject>();
+    private readonly List<GameObject> _citypieces = new List<GameObject>();
     //1 = straight piece
     //2 = t shaped piece
     //3 = 4 way piece
@@ -55,7 +55,7 @@ public class CityGenerator : MonoBehaviour
     //13 = l shaped alley
 
     //look into a primitive marching squares-esque system for this
-    [InspectorButton("OnButtonClicked")]
+    [InspectorButton("OnButtonClicked")] [UsedImplicitly]
     public bool GenerateCityButton;
 
     [UsedImplicitly]
@@ -266,6 +266,7 @@ public class CityGenerator : MonoBehaviour
         }
         Debug.Log("Placing Park");
         _posGrid[z, x] = 31;
+        _rotGrid[z, x] = Random.Range(0, 4);
     }
 
     private void LayBeach()
@@ -336,12 +337,11 @@ public class CityGenerator : MonoBehaviour
                     13 => LAlley,
                     21 => BeachStraight,
                     22 => BeachCorner,
-                    //30 marks the presence of a park but doesn't place one, so that it can be detected in code
                     30 => null,
-                    //the park prefab is 5x5 tiles and 31 marks the center of it
                     31 => Park,
                     _ => CrossRoad
                 };
+
                 if (chosen != null)
                 {
                     _citypieces.Add(GameObject.Instantiate(chosen, new Vector3(x, 0, z) * TileSideLength, rot, parentTransform));
