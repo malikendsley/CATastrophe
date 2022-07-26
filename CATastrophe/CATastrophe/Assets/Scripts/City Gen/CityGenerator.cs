@@ -43,9 +43,15 @@ public class CityGenerator : MonoBehaviour
     public GameObject BeachCorner;
 
     public GameObject Park;
+    public GameObject Water;
 
+    private GameObject waterRef;
     private bool _pastClicked;
     private readonly List<GameObject> _citypieces = new List<GameObject>();
+    private bool cityMade = false;
+
+    private Vector3 homeTile;
+    private System.Random rand = new System.Random();
     //1 = straight piece
     //2 = t shaped piece
     //3 = 4 way piece
@@ -72,6 +78,7 @@ public class CityGenerator : MonoBehaviour
 
     private void GenerateCity()
     {
+
         GenerateTileGrid();
         GenerateRotGrid();
         PlaceParks();
@@ -79,7 +86,7 @@ public class CityGenerator : MonoBehaviour
         ParseGrid(_posGrid, _rotGrid);
         Surface.RemoveData();
         Surface.BuildNavMesh();
-        
+        cityMade = true;
     }
 
     private void GenerateTileGrid()
@@ -189,6 +196,7 @@ public class CityGenerator : MonoBehaviour
         //cap the number of parks to either number of slots or user defined
         for (var i = 0; i < Math.Min(_parkTargets.Count, ParkCap); i++)
         {
+            
             var (z, x) = _parkTargets[i];
             //Debug.Log("Evaluating" + z + ", " + x);
             //check surroundings to avoid placing parks too close
@@ -253,6 +261,7 @@ public class CityGenerator : MonoBehaviour
             }
         }
         _parkTargets.Clear();
+        
     }
 
     private void LayPark(int z, int x)
@@ -348,6 +357,9 @@ public class CityGenerator : MonoBehaviour
                 }
             }
         }
+
+        homeTile = _citypieces[rand.Next(_citypieces.Count)].transform.position;
+        waterRef = GameObject.Instantiate(Water, new Vector3((TileSideLength * XSize) / 2, -1, (TileSideLength * XSize) / 2), Quaternion.identity, parentTransform);
     }
 
     private int GenHouse()
@@ -454,6 +466,18 @@ public class CityGenerator : MonoBehaviour
         {
             DestroyImmediate(obj);
         }
+        _citypieces.Clear();
+        DestroyImmediate(waterRef);
+    }
+
+    public Vector3 getSpawn()
+    {
+        return homeTile;
+    }
+
+    public bool isCityMade()
+    {
+        return cityMade;
     }
 }
 

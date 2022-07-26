@@ -12,4 +12,4 @@ EditorBuildSettings:
     path: Assets/Scenes/PickupTest/PickupTest.unity
     guid: 89512e3c11934de42a4e3e7e7442c703
   m_configObjects:
-    com.unity.input.settings: {fileID: 11400000, guid: 7f340f86be2d4284e8696686a30b324d, type: 2}
+    com.unity.input.settings: {fileID: 11400000, guid: f1f9025d65f9c744380e80b941ef3624, type: 2}

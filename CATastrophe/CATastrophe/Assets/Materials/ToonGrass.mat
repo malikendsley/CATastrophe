@@ -38,7 +38,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _BladeTexture:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 0.12, y: 0.56}
+        m_Scale: {x: 0, y: 0}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
@@ -107,12 +107,12 @@ Material:
     - Vector1_decb949e1a424a939956cb86474a6e90: 1000.52
     - Vector1_ebb3ac4d5b6d4872867a299748aa215d: 0.52
     - _AlphaClip: 0
-    - _BendDelta: 0
-    - _BladeBendCurve: 1.76
-    - _BladeBendDistance: 0.28
-    - _BladeHeightMax: 0.3
-    - _BladeHeightMin: 0.3
-    - _BladeSegments: 2.57
+    - _BendDelta: 0.5
+    - _BladeBendCurve: 1
+    - _BladeBendDistance: 0.57
+    - _BladeHeightMax: 0.438
+    - _BladeHeightMin: 0
+    - _BladeSegments: 2
     - _BladeWidthMax: 0.1
     - _BladeWidthMin: 0.1
     - _Blend: 0
@@ -128,8 +128,8 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _GrassFalloff: 0
-    - _GrassThreshold: 0.952
+    - _GrassFalloff: 0.25
+    - _GrassThreshold: 0.5
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
