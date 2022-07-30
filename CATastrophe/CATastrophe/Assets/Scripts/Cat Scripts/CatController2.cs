@@ -6,7 +6,7 @@ public class CatController2 : MonoBehaviour
 {
 
     [SerializeField]
-    private GameObject cam;
+    private Camera cam;
     private Transform camTransform;
 
 
@@ -19,16 +19,20 @@ public class CatController2 : MonoBehaviour
     private float smoothVelocity;
     private Vector3 thisPos;
     private Vector3 lastPos;
+    public bool canJump = true;
 
     //taken from Limina
-    public LayerMask groundMask;
+    public LayerMask checkMask;
     public Transform groundCheck;
+    public Transform ceilingCheck;
     public float gravity = -9.81f;
     Vector3 velocity;
-    public float groundDistance = 0f;
+    public float checkDistance = 0f;
+    private bool isCeiling;
     private bool isGrounded;
     public float jumpHeight = 1;
 
+    private bool ceilingLocked = true;
     //pickup system
     [SerializeField]
     private PickupManager pm;
@@ -36,12 +40,17 @@ public class CatController2 : MonoBehaviour
     void OnDrawGizmosSelected()
     {
         Gizmos.color = isGrounded ? Color.green : Color.red;
-        Gizmos.DrawSphere(groundCheck.position, groundDistance);
+        Gizmos.DrawSphere(groundCheck.position, checkDistance);
+        Gizmos.color = isCeiling ? Color.green : Color.red;
+        Gizmos.DrawSphere(ceilingCheck.position, checkDistance);
     }
 
     void Start()
     {
-        camTransform = cam.transform;
+        if(cam != null)
+        {
+            camTransform = cam.transform;
+        }
         controller = GetComponent<CharacterController>();
         lastPos = gameObject.transform.position;
 
@@ -59,22 +68,36 @@ public class CatController2 : MonoBehaviour
         Vector3 direction = new Vector3(h, 0, v);
 
         //handle gravity / jumping
+        
+        isGrounded = Physics.CheckSphere(groundCheck.position, checkDistance, checkMask);
+        isCeiling = Physics.CheckSphere(ceilingCheck.position, checkDistance, checkMask);
 
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-
-
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        if (Input.GetButtonDown("Jump") && isGrounded && canJump)
         {
             Debug.Log("Jumped");
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
-
-        velocity.y += gravity * Time.deltaTime;
+        if (isCeiling && !ceilingLocked)
+        {
+            Debug.Log("Ceiling");
+            velocity.y = 0;
+            //lock the bump check until we touch the ground again
+            ceilingLocked = true;
+        }
+        if (!isGrounded)
+        {
+            velocity.y += gravity * Time.deltaTime;
+        } else
+        {
+            //if on the ground unlock the bump check
+            ceilingLocked = false;
+        }
         controller.Move(velocity * Time.deltaTime);
 
         if (direction.magnitude > moveDeadzone)
         {
-            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + camTransform.eulerAngles.y;
+            //ternary: don't include cam adjustment if no cam is defined
+            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + ((cam != null) ? camTransform.eulerAngles.y : 0);
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref smoothVelocity, turnSmoothTime);
             transform.rotation = Quaternion.Euler(0f, angle, 0f);
 

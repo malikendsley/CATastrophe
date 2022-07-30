@@ -37,10 +37,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _AmbientStrength: 0.52
-    - _FalloffAmount: 0.05
+    - _FalloffAmount: 0.02
     - _FresnelSize: 0.1
     - _LightingCutoff: 0
-    - _Smoothness: 1000
+    - _Smoothness: 1002.37
     m_Colors:
     - Vector2_3b91855bb0e844c5a6eee9cd2443e634: {r: 1, g: 1, b: 0, a: 0}
     - _DiffuseColor: {r: 1, g: 1, b: 1, a: 1}
